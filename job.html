@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Job Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        header nav {
+            margin: 10px 0;
+        }
+
+        header nav a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        main {
+            padding: 20px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        form label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        form input, form textarea, form select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        form button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #45a049;
+        }
+
+        .job {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Online Job Board</h1>
+        <nav>
+            <a href="#" onclick="showHomePage()">Home</a>
+            <a href="#" onclick="showJobPostingPage()">Post a Job</a>
+            <a href="#" onclick="showJobListingPage()">View Jobs</a>
+            <a href="#" onclick="showLoginPage()">Login</a>
+            <a href="#" onclick="showRegisterPage()">Register</a>
+        </nav>
+    </header>
+    <main id="main-content">
+        <!-- Home Page Content -->
+        <div id="home-page">
+            <h2>Welcome to Online Job Board</h2>
+            <p>Choose an option from the navigation menu to get started.</p>
+        </div>
+        <!-- Job Posting Page Content -->
+        <div id="job-posting-page" style="display: none;">
+            <h2>Post a Job</h2>
+            <form id="job-posting-form">
+                <label for="job-title">Job Title:</label>
+                <input type="text" id="job-title" name="job-title" required>
+                <label for="job-description">Description:</label>
+                <textarea id="job-description" name="job-description" required></textarea>
+                <label for="job-location">Location:</label>
+                <input type="text" id="job-location" name="job-location" required>
+                <label for="job-type">Job Type:</label>
+                <select id="job-type" name="job-type" required>
+                    <option value="Full-time">Full-time</option>
+                    <option value="Part-time">Part-time</option>
+                    <option value="Contract">Contract</option>
+                    <option value="Temporary">Temporary</option>
+                </select>
+                <button type="submit">Post Job</button>
+            </form>
+        </div>
+        <!-- Job Listing Page Content -->
+        <div id="job-listing-page" style="display: none;">
+            <h2>Available Jobs</h2>
+            <div id="job-list">
+                <!-- Job postings will be listed here -->
+            </div>
+        </div>
+        <!-- Job Application Page Content -->
+        <div id="job-application-page" style="display: none;">
+            <h2>Apply for Job</h2>
+            <form id="job-application-form">
+                <label for="applicant-name">Name:</label>
+                <input type="text" id="applicant-name" name="applicant-name" required>
+                <label for="applicant-email">Email:</label>
+                <input type="email" id="applicant-email" name="applicant-email" required>
+                <label for="applicant-resume">Resume:</label>
+                <textarea id="applicant-resume" name="applicant-resume" required></textarea>
+                <button type="submit">Submit Application</button>
+            </form>
+        </div>
+        <!-- User Authentication Pages Content -->
+        <div id="register-page" style="display: none;">
+            <h2>Register</h2>
+            <form id="register-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Register</button>
+            </form>
+        </div>
+        <div id="login-page" style="display: none;">
+            <h2>Login</h2>
+            <form id="login-form">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerForm = document.getElementById('register-form');
+            const loginForm = document.getElementById('login-form');
+            const jobPostingForm = document.getElementById('job-posting-form');
+            const jobList = document.getElementById('job-list');
+            const jobApplicationForm = document.getElementById('job-application-form');
+            let jobs = JSON.parse(localStorage.getItem('jobs')) || [];
+
+            if (registerForm) {
+                registerForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // Registration logic here
+                });
+            }
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // Login logic here
+                });
+            }
+
+            if (jobPostingForm) {
+                jobPostingForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const title = document.getElementById('job-title').value;
+                    const description = document.getElementById('job-description').value;
+                    const location = document.getElementById('job-location').value;
+                    const type = document.getElementById('job-type').value;
+
+                    const job = { title, description, location, type };
+                    jobs.push(job);
+                    localStorage.setItem('jobs', JSON.stringify(jobs));
+                    alert('Job posted!');
+                    showHomePage();
+                });
+            }
+
+            if (jobList) {
+                jobs.forEach((job, index) => {
+                    const div = document.createElement('div');
+                    div.classList.add('job');
+                    div.innerHTML = `
+                        <h3>${job.title}</h3>
+                        <p>${job.description}</p>
+                        <p>Location: ${job.location}</p>
+                        <p>Type: ${job.type}</p>
+                        <button onclick="applyForJob(${index})">Apply</button>
+                    `;
+                    jobList.appendChild(div);
+                });
+            }
+
+            if (jobApplicationForm) {
+                jobApplicationForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // Job application logic here
+                });
+            }
+        });
+
+        function showHomePage() {
+            document.getElementById('home-page').style.display = 'block';
+            document.getElementById('job-posting-page').style.display = 'none';
+            document.getElementById('job-listing-page').style.display = 'none';
+            document.getElementById('job-application-page').style.display = 'none';
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'none';
+        }
+
+        function showJobPostingPage() {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('job-posting-page').style.display = 'block';
+            document.getElementById('job-listing-page').style.display = 'none';
+            document.getElementById('job-application-page').style.display = 'none';
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'none';
+        }
+
+        function showJobListingPage() {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('job-posting-page').style.display = 'none';
+            document.getElementById('job-listing-page').style.display = 'block';
+            document.getElementById('job-application-page').style.display = 'none';
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'none';
+        }
+
+        function showJobApplicationPage() {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('job-posting-page').style.display = 'none';
+            document.getElementById('job-listing-page').style.display = 'none';
+            document.getElementById('job-application-page').style.display = 'block';
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'none';
+        }
+
+        function showRegisterPage() {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('job-posting-page').style.display = 'none';
+            document.getElementById('job-listing-page').style.display = 'none';
+            document.getElementById('job-application-page').style.display = 'none';
+            document.getElementById('register-page').style.display = 'block';
+            document.getElementById('login-page').style.display = 'none';
+        }
+
+        function showLoginPage() {
+            document.getElementById('home-page').style.display = 'none';
+            document.getElementById('job-posting-page').style.display = 'none';
+            document.getElementById('job-listing-page').style.display = 'none';
+            document.getElementById('job-application-page').style.display = 'none';
+            document.getElementById('register-page').style.display = 'none';
+            document.getElementById('login-page').style.display = 'block';
+        }
+
+        function applyForJob(index) {
+            showJobApplicationPage();
+            // Logic to pre-fill application form with job details
+        }
+    </script>
+</body>
+</html>
